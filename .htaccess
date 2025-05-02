@@ -1,0 +1,21 @@
+# Enable rewrite engine
+RewriteEngine On
+RewriteBase /WEBDEV%20PROJECT/
+
+# Allow direct access to files
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Rewrite the URLs for posts
+RewriteRule ^id/([^/]+)/([^/]+)/?$ view_post.php?id=$1&slug=$2 [L,QSA]
+
+# Rewrite the URLs for categories
+RewriteRule ^category/([^/]+)/([^/]+)/?$ index.php?id=$1&slug=$2 [L,QSA]
+
+# Remove trailing slashes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ $1 [L,R=301]
+
+# Handle the home page
+RewriteRule ^$ index.php [L]

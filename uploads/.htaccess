@@ -1,0 +1,8 @@
+Options -Indexes
+Order allow,deny
+Deny from all
+Allow from 127.0.0.1
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Order deny,allow
+    Allow from all
+</FilesMatch>
