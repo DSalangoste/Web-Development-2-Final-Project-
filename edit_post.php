@@ -49,6 +49,11 @@ try {
     // Get existing post categories
     $post_categories = $post['category_ids'] ? explode(',', $post['category_ids']) : [];
 
+    // Get existing images for this post
+    $stmt = $pdo->prepare("SELECT * FROM images WHERE post_id = ?");
+    $stmt->execute([$post_id]);
+    $existing_images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     $pageTitle = "Edit Post - " . htmlspecialchars($post['title']);
     include 'includes/header.php';
 ?>
@@ -104,6 +109,29 @@ try {
                     <?php endforeach; ?>
                 </div>
             </div>
+
+            <?php if (!empty($existing_images)): ?>
+            <div class="form-group">
+                <label>Current Images</label>
+                <div class="existing-images">
+                    <?php foreach ($existing_images as $image): ?>
+                        <div class="image-item">
+                            <img src="<?= htmlspecialchars($image['file_path']) ?>" 
+                                 alt="Post image" 
+                                 class="post-image-thumbnail">
+                            <div class="image-info">
+                                <span class="image-name"><?= htmlspecialchars($image['original_filename']) ?></span>
+                                <a href="remove_image.php?post_id=<?= $post['post_id'] ?>" 
+                                   class="button danger"
+                                   onclick="return confirm('Are you sure you want to remove this image?')">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <div class="form-group">
                 <label for="image">Add Images</label>
@@ -254,6 +282,59 @@ try {
 
 .button:not(.primary):hover {
     background-color: var(--border-color);
+}
+
+.button.danger {
+    background-color: #dc3545;
+    color: white;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
+
+.button.danger:hover {
+    background-color: #c82333;
+}
+
+.existing-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 4px;
+}
+
+.image-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.post-image-thumbnail {
+    max-width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.image-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.image-name {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-align: center;
+    word-break: break-word;
 }
 
 .alert {
