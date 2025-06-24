@@ -141,7 +141,7 @@ try {
 
             <div class="form-actions">
                 <button type="submit" class="button primary">Update Post</button>
-                <a href="/FinalProject/view_post.php?id=<?= $post['post_id'] ?>" class="button">Cancel</a>
+                <a href="<?= getPostUrl($post['post_id'], $post['title']) ?>" class="button">Cancel</a>
             </div>
         </form>
     </div>
